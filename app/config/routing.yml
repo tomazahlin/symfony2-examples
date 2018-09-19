@@ -1,0 +1,8 @@
+example_project_bundle_api:
+    resource: "@ExampleProjectBundleApiBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation

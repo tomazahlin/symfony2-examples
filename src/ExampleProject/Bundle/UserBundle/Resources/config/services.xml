@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://symfony.com/schema/dic/services"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <!-- XML documents can be validated against a schema, this is why I like to use them for container definition -->
+
+    <services>
+
+        <!-- Security -->
+
+        <!-- Voters -->
+
+        <service id="example_user.security.voter.user" class="ExampleProject\Bundle\UserBundle\Security\Authorization\Voter\UserVoter" public="false">
+            <argument type="service" id="example_user.security_context" />
+            <tag name="security.voter" />
+        </service>
+
+        <!-- Manager -->
+        <service id="example_user.manager.user" class="ExampleProject\Bundle\UserBundle\Manager\UserManager">
+            <argument type="service" id="example_core.repository.change_log"/>
+            <argument type="service" id="example_user.password_encoder"/>
+        </service>
+
+        <!-- Controllers -->
+
+        <!-- TODO there should be no two way dependencies between bundles, they should only be one way -->
+        <!-- Example Api can depend on User, but User not on Api bundle -->
+        <service id="example_user.controller.abstract" class="ExampleProject\Bundle\UserBundle\Controller\AbstractController" abstract="true">
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="example_core.deserializer"/>
+            <argument type="service" id="example_core.handler.filter"/>
+            <argument type="service" id="example_core.serializer.groups" />
+            <argument type="service" id="example_core.request_forwarder" />
+            <argument type="service" id="example_api.repository.client" />
+        </service>
+
+        <service id="example_user.controller.user" class="ExampleProject\Bundle\UserBundle\Controller\UserController"
+                 parent="example_user.controller.abstract">
+        </service>
+
+        <!-- Repository -->
+
+        <service id="example_user.repository.user"
+                 class="ExampleProject\Bundle\UserBundle\Repository\UserRepository"
+                 parent="example_core.repository.abstract">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" />
+            <argument>ExampleProject\Bundle\UserBundle\Entity\User</argument>
+        </service>
+
+        <!-- Referrer data -->
+        <service id="example_user.request.referrer_data" class="ExampleProject\Bundle\UserBundle\Request\Referrer\ReferrerData" />
+
+        <!-- Commands -->
+        <service id="example_user.command.clean_deleted_users" class="ExampleProject\Bundle\UserBundle\Command\CleanDeletedUsersCommand">
+            <argument type="service" id="example_user.repository.user"/>
+            <tag name="console.command" />
+        </service>
+
+    </services>
+
+</container>

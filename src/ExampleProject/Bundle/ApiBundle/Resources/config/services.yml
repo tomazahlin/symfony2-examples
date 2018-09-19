@@ -1,0 +1,4 @@
+services:
+#    example_project_bundle_api.example:
+#        class: ExampleProject\Bundle\ApiBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

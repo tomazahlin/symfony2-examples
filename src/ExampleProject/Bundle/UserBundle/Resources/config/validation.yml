@@ -1,0 +1,15 @@
+ExampleProject\Bundle\UserBundle\Entity\User:
+    constraints:
+        - ExampleProject\Bundle\UserBundle\Validator\Constraints\UsernameUnique: { groups: [registration, update] }
+
+    properties:
+        username:
+            - NotBlank: { message: 'Username cannot be empty.', groups: [registration, update] }
+            - ExampleProject\Bundle\UserBundle\Validator\Constraints\Username: { groups: [registration, update] }
+        email:
+            - NotBlank: { message: 'Email cannot be empty.', groups: [registration] }
+            - Email: { message: '"{{ value }}" is not a valid email.', groups: [registration] }
+            - ExampleProject\Bundle\UserBundle\Validator\Constraints\EmailUnique: { groups: [registration] }
+        settings:
+            - NotNull: { message: 'User cannot have empty settings.', groups: [registration, update] }
+            - Valid: ~
